@@ -4,7 +4,7 @@ import React from 'react'
 type QuestionsProps = {
     id: string
     question: string,
-    updateAnswer: (id: string, answer: string) => void;
+    updateAnswer: (questionId: string, answeredText: string) => void;
 }
 
 const Questions = ({ id, question, updateAnswer} : QuestionsProps) => {
