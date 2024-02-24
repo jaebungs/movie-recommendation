@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Layout from '@/components/Layout'
 import { AnswerType } from '@/types'
-import { main } from '@/libs/api/main'
 import { Questions } from '@/components'
 
 const questionList = [
@@ -21,11 +20,29 @@ const questionList = [
   },
 ]
 
+async function callCreateEmbedding(prompt : string) {
+  try {
+    const response = await fetch('/api/createEmbedding', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    console.log('callCreateEmbedding', response)
+    return response;
+
+  } catch (error) {
+    console.error(`API failed during createEmbedding. - ${error}`)
+  }
+}
+
 export default function Home() {
-  const [answer, setAnswer] = useState<AnswerType[]>([]);
+  const [answers, setAnswers] = useState<AnswerType[]>([]);
 
   const updateAnswer = (questionId: string, answeredText: string) => {
-    setAnswer(prevAnswers => {
+    setAnswers(prevAnswers => {
       const existAnswer = prevAnswers.findIndex(answer => answer.questionId === questionId)
 
       if (existAnswer > -1) {
@@ -42,8 +59,14 @@ export default function Home() {
   const formSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    main(questionList, answer)
-    console.log(answer)
+    let concat : string = ''
+    for (let i = 0; i < answers.length; i++) {
+        const question = questionList[i].text
+        const answer = answers[i].answer
+        concat += `${question} and the answer is ${answer} ||`
+    }
+
+    callCreateEmbedding(concat)
   }
 
   return (
