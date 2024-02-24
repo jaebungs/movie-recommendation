@@ -2,12 +2,9 @@
 
 import React, { useState } from 'react';
 import Layout from '@/components/Layout'
+import { AnswerType } from '@/types'
+import { main } from '@/libs/api/main'
 import { Questions } from '@/components'
-
-type AnswerType = {
-  questionId: string;
-  answer: string;
-}
 
 const questionList = [
   {

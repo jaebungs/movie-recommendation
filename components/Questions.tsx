@@ -1,11 +1,6 @@
 'use client'
 import React from 'react'
-
-type QuestionsProps = {
-    id: string
-    question: string,
-    updateAnswer: (questionId: string, answeredText: string) => void;
-}
+import { QuestionsProps } from '@/types'
 
 const Questions = ({ id, question, updateAnswer} : QuestionsProps) => {
   return (
