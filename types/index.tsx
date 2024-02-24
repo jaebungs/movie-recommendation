@@ -1,3 +1,8 @@
+export type InitialQuestionList = {
+    id: string,
+    text: string
+}
+
 export type QuestionsProps = {
     id: string
     question: string,

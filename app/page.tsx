@@ -41,6 +41,8 @@ export default function Home() {
 
   const formSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    main(questionList, answer)
     console.log(answer)
   }
 
