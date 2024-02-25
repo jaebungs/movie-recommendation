@@ -21,11 +21,10 @@ export default async function findNearestMatchHandler(req, res) {
         match_threshold: 0.20,
         match_count: 3
       });
-      console.log('findNearestMatch', data) // check terminal
+      // console.log('findNearestMatch', data) // check terminal
       
-      // return data.map(movie => movie.content).join(', ')
       return res.status(200).json(data)
-      
+
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

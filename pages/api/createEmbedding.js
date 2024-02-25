@@ -16,8 +16,9 @@ export default async function createEmbeddingHandler(req, res) {
         encoding_format: "float"
       });
 
-      console.log('Embedding response',response) // check terminal
+      // console.log('Embedding response',response) // check terminal
       return res.status(200).json(response.data);
+      
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
