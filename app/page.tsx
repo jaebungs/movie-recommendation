@@ -124,9 +124,9 @@ export default function Home() {
     const recommendationAnswer = await getChatCompletions(concat, matchingInString)
     
     setRecommendationResult(() => {
-      console.log('Recommendation: ', recommendationAnswer.choices[0].message.content)
       return recommendationAnswer.choices[0].message.content
     })
+    console.log('Recommendation: ', recommendationAnswer.choices[0].message.content)
   
   }
 
