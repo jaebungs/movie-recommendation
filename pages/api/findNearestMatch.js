@@ -16,7 +16,7 @@ export default async function findNearestMatchHandler(req, res) {
     try {
       const { data } = await supabase.rpc('match_movies', {
         query_embedding: embedding,
-        match_threshold: 0.20,
+        match_threshold: 0.15,
         match_count: 3
       });
       // console.log('findNearestMatch', data) // check terminal
