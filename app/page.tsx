@@ -31,7 +31,9 @@ async function callCreateEmbedding(prompt : string) {
     });
 
     console.log('callCreateEmbedding', response)
-    return response;
+    if (!response.ok) throw new Error('Network from callCreateEmbedding resposne was no ok')
+
+    return response.json();
 
   } catch (error) {
     console.error(`API failed during createEmbedding. - ${error}`)
@@ -66,7 +68,10 @@ export default function Home() {
         concat += `${question} and the answer is ${answer} ||`
     }
 
-    callCreateEmbedding(concat)
+    // 1. Get Question and answer embedding values
+    const embeddingResponse = await callCreateEmbedding(concat)
+    const embedding = embeddingResponse[0].embedding
+
   }
 
   return (
