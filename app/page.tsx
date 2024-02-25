@@ -30,7 +30,6 @@ async function callCreateEmbedding(prompt : string) {
       body: JSON.stringify({ prompt }),
     });
 
-    console.log('callCreateEmbedding', response)
     if (!response.ok) throw new Error('Network from callCreateEmbedding resposne was no ok')
 
     return response.json();
@@ -113,12 +112,19 @@ export default function Home() {
 
     // 2. Perfrom smiliarity search using the embedding values
     const matchings: MatchedMovie[] = await callNearestMatch(embedding)
+    if (matchings.length <= 0) {
+      setRecommendationResult(() => {
+        return `Sorry, we couldn't find a movie you'd like. My database is pretty small.`
+      })
+      throw new Error('No movie matching found.')
+    }
     const matchingInString = matchings.map(matchedMovie => matchedMovie.content).join(', ')
 
     // 3. Use openai chat completion to give recommendation.
     const recommendationAnswer = await getChatCompletions(concat, matchingInString)
     
     setRecommendationResult(() => {
+      console.log('Recommendation: ', recommendationAnswer.choices[0].message.content)
       return recommendationAnswer.choices[0].message.content
     })
   
