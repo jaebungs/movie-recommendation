@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Layout from '@/components/Layout'
-import { AnswerType } from '@/types'
+import { AnswerType, MatchedMovie } from '@/types'
 import { Questions } from '@/components'
 
 const questionList = [
@@ -59,8 +59,28 @@ async function callNearestMatch(embedding: []) {
   }
 }
 
+async function getChatCompletions(questionsAndAnswers: string, context: string) {
+  try {
+    const response = await fetch('api/getChatCompletions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ questionsAndAnswers, context })
+    })
+
+    if (!response.ok) throw new Error('Network from getChatCompletions resposne was no ok')
+    
+    return response.json()
+
+  } catch (error) {
+    console.error(`Error during getChatCompletion. - ${error}`)
+  }
+}
+
 export default function Home() {
   const [answers, setAnswers] = useState<AnswerType[]>([]);
+  const [recommendationResult, setRecommendationResult] = useState('')
 
   const updateAnswer = (questionId: string, answeredText: string) => {
     setAnswers(prevAnswers => {
@@ -77,7 +97,7 @@ export default function Home() {
     })
   }
 
-  const formSubmit = (e: React.FormEvent) => {
+  const formSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     let concat : string = ''
@@ -94,8 +114,14 @@ export default function Home() {
     // 2. Perfrom smiliarity search using the embedding values
     const matchings: MatchedMovie[] = await callNearestMatch(embedding)
     const matchingInString = matchings.map(matchedMovie => matchedMovie.content).join(', ')
-    console.log('matchings', matchingInString)
+
+    // 3. Use openai chat completion to give recommendation.
+    const recommendationAnswer = await getChatCompletions(concat, matchingInString)
     
+    setRecommendationResult(() => {
+      return recommendationAnswer.choices[0].message.content
+    })
+  
   }
 
   return (
@@ -106,6 +132,9 @@ export default function Home() {
         ))}
         
         <button type="submit">Get Recommendation</button>
+        
+        <h2>Recommendation:</h2>
+        <div>{recommendationResult}</div>
       </form>
     </Layout>
   )
