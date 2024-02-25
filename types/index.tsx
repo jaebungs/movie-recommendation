@@ -13,3 +13,9 @@ export type AnswerType = {
     questionId: string;
     answer: string;
   }
+
+export interface MatchedMovie {
+    content: string;
+    id: number;
+    similarity: number;
+}

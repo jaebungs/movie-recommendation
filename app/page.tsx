@@ -40,6 +40,25 @@ async function callCreateEmbedding(prompt : string) {
   }
 }
 
+async function callNearestMatch(embedding: []) {
+  try {
+    const response = await fetch('/api/findNearestMatch', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ embedding })
+    })
+
+    if (!response.ok) throw new Error('Network from callNearestMatch resposne was no ok')
+
+    return response.json()
+  
+  } catch (error) {
+    console.error(`Error during callNearestMatch. - ${error}`)
+  }
+}
+
 export default function Home() {
   const [answers, setAnswers] = useState<AnswerType[]>([]);
 
@@ -72,6 +91,11 @@ export default function Home() {
     const embeddingResponse = await callCreateEmbedding(concat)
     const embedding = embeddingResponse[0].embedding
 
+    // 2. Perfrom smiliarity search using the embedding values
+    const matchings: MatchedMovie[] = await callNearestMatch(embedding)
+    const matchingInString = matchings.map(matchedMovie => matchedMovie.content).join(', ')
+    console.log('matchings', matchingInString)
+    
   }
 
   return (
