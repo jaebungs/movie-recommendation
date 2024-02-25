@@ -9,8 +9,6 @@ export default async function findNearestMatchHandler(req, res) {
   if (!url) throw new Error(`Expected env var SUPABASE_URL`);
   
   const supabase = createClient(url, privateKey);
-  const vectorDBURL = process.env.SUPABASE_URL;
-  const vectorDBKey = process.env.SUPABASE_API_KEY;
   const { embedding } = req.body
 
   if (req.method === 'POST') {
